@@ -13,14 +13,13 @@ export class SimpleStrategy implements Strategy {
       const nextCoord = coordInDirection(head, direction);
       const isOutofBounds = isOutside(nextCoord, gameState.board);
       const isSnakeBody = isSnakePart(nextCoord, gameState.board)
-      // Check that you don't collide with any snake
-      // Add more checks if needed
       
       let outcome = Outcome.ALIVE
       if (isOutofBounds) {
         outcome = Outcome.DEAD
       }
 
+      // Check that you don't collide with any snake
       if (isSnakeBody) {
         outcome = Outcome.DEAD
       }

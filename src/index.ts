@@ -12,9 +12,11 @@
 
 import runServer from './server/server';
 import { SimpleStrategy } from './strategy/SimpleStrategy';
+import { KweekendStrategy } from './strategy/KweekendStrategy';
 import { GameState, InfoResponse, MoveResponse } from './types/types';
 
-const allroundStrategy = new SimpleStrategy();
+//const allroundStrategy = new SimpleStrategy();
+const allroundStrategy = new KweekendStrategy();
 
 // info is called when you create your Battlesnake on play.battlesnake.com
 // and controls your Battlesnake's appearance
@@ -25,9 +27,9 @@ function info(): InfoResponse {
   return {
     apiversion: "1",
     author: "",       // TODO: Your Battlesnake Username
-    color: "#888888", // TODO: Choose color
-    head: "default",  // TODO: Choose head
-    tail: "default",  // TODO: Choose tail
+    color: "##4a4948", // TODO: Choose color
+    head: "space-helmet",  // TODO: Choose head
+    tail: "nr-booster",  // TODO: Choose tail
   };
 }
 

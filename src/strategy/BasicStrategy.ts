@@ -36,6 +36,7 @@ export class BasicStrategy implements Strategy {
     const nextMove = safeMoves.sort((a, b) => b.otherData - a.otherData)[0];
 
     console.log(`MOVE ${gameState.turn}: ${nextMove.direction}`)
+    console.log('hej');
     return { move: nextMove.direction.toLocaleLowerCase() };
 
   }

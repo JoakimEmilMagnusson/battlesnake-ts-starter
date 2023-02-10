@@ -1,5 +1,6 @@
+import { boardState } from "../tests/GameStateGenerator";
 import { Direction } from "../types/strategy";
-import { Battlesnake, Board, Coord } from "../types/types";
+import { Battlesnake, Board, Coord, GameState } from "../types/types";
 
 export function coordInDirection(start: Coord, direction: Direction): Coord {
   switch (direction) {
@@ -14,8 +15,64 @@ export function coordInDirection(start: Coord, direction: Direction): Coord {
   }
 }
 
+export function isNextToSnakeBody(coord: Coord, gamestate: GameState): boolean {
+  const coords = [{x: coord.x+1, y: coord.y}, {x: coord.x, y: coord.y+1}, {x: coord.x-1, y: coord.y}, {x: coord.x, y: coord.y-1}]
+  return coords.some((nextCoord, Coord) => {
+    return gamestate.board.snakes.some((snake: Battlesnake) => {
+      return isSnakePart({ x: nextCoord.x, y: nextCoord.y }, gamestate.board)
+    })
+  })
+}
+
+export function isNextToBorder(coord: Coord, gamestate: GameState): boolean {
+  const coords = [{x: coord.x+1, y: coord.y}, {x: coord.x, y: coord.y+1}, {x: coord.x-1, y: coord.y}, {x: coord.x, y: coord.y-1}]
+  return coords.some((nextCoord, Coord) => {
+    return isOutside(nextCoord, gamestate.board)
+  })
+}
+
+export function isNextToBiggerSnakeHead(coord: Coord, gamestate: GameState, snakeLenght: number): boolean {
+  const coords = [{x: coord.x+1, y: coord.y}, {x: coord.x, y: coord.y+1}, {x: coord.x-1, y: coord.y}, {x: coord.x, y: coord.y-1}]
+  return coords.some((nextCoord, Coord) => {
+    if (sameCoord(nextCoord, gamestate.you.head)) return false
+    return gamestate.board.snakes.some((snake: Battlesnake) => {
+      return isBiggerSnakeHead({ x: nextCoord.x, y: nextCoord.y }, gamestate.board, snakeLenght)
+    })
+  })
+}
+
+export function isNexNexttToBiggerSnakeHead(coord: Coord, gamestate: GameState, snakeLenght: number): boolean {
+  const coords = [{x: coord.x+1, y: coord.y}, {x: coord.x, y: coord.y+1}, {x: coord.x-1, y: coord.y}, {x: coord.x, y: coord.y-1}]
+  return coords.some((nextCoord, coord) => {
+    isNextToBiggerSnakeHead(nextCoord, gamestate, snakeLenght)
+  })
+}
+
+export function isBiggerSnakeHead(coord: Coord, board: Board, snakeLenght: number): boolean {
+  return board.snakes.some((snake: Battlesnake) => {
+    return sameCoord(snake.head, coord) && snake.length >= snakeLenght
+  })
+}
+
+export function isNextToSmallerSnakeHead(coord: Coord, gamestate: GameState, snakeLenght: number): boolean {
+  const coords = [{x: coord.x+1, y: coord.y}, {x: coord.x, y: coord.y+1}, {x: coord.x-1, y: coord.y}, {x: coord.x, y: coord.y-1}]
+  return coords.some((nextCoord, Coord) => {
+    if (sameCoord(nextCoord, gamestate.you.head)) return false
+    return gamestate.board.snakes.some((snake: Battlesnake) => {
+      return isSmallerSnakeHead({ x: nextCoord.x, y: nextCoord.y }, gamestate.board, snakeLenght)
+    })
+  })
+}
+
+export function isSmallerSnakeHead(coord: Coord, board: Board, snakeLenght: number): boolean {
+  return board.snakes.some((snake: Battlesnake) => {
+    return sameCoord(snake.head, coord) && snake.length < snakeLenght
+  })
+}
+
 export function isSnakePart(coord: Coord, board: Board): boolean {
   return board.snakes.some((snake: Battlesnake) => {
+    if (sameCoord(snake.body[snake.body.length - 1], coord)) return false
     return snake.body.some((bodyPart: Coord) => sameCoord(bodyPart, coord));
   });
 }
